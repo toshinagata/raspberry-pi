@@ -61,7 +61,7 @@ install:
 	cp -f fatfs/ff.h fatfs/ffconf.h fatfs/integer.h $(PREFIX)/include/fatfs
 	cp -f platform.inc $(PREFIX)/include
 ifeq ($(USPI),1)
-	cp -f uspi.h $(PREFIX)/include
+	cp -f uspi.h uspios.h $(PREFIX)/include
 endif
 	-mkdir -p $(PREFIX)/lib
 	cp -f libkernel.a $(PREFIX)/lib
