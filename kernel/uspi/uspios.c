@@ -302,6 +302,7 @@ typedef struct
     unsigned         m_nElapsesAt;
     void            *m_pParam;
     void            *m_pContext;
+    unsigned         m_nDelay;
 } TKernelTimer;
 
 static volatile unsigned     m_nTicks;
@@ -341,6 +342,9 @@ static void TimerInterruptHandler (void *pParam)
         {
             if ((int) (pTimer->m_nElapsesAt-m_nTicks) <= 0)
             {
+                if (pTimer->m_nDelay > 0)
+                pTimer->m_nElapsesAt += pTimer->m_nDelay;
+                else
                 pTimer->m_pHandler = 0;
 
                 (*pHandler) (hTimer+1, pTimer->m_pParam, pTimer->m_pContext);
@@ -388,6 +392,12 @@ unsigned StartKernelTimer (unsigned nDelay,
     }
 
     assert (pHandler != 0);
+    if ((signed int)nDelay < 0) {
+        nDelay = -nDelay;
+        m_KernelTimer[hTimer].m_nDelay = nDelay;
+    } else {
+        m_KernelTimer[hTimer].m_nDelay = 0;
+    }
     m_KernelTimer[hTimer].m_pHandler    = pHandler;
     m_KernelTimer[hTimer].m_nElapsesAt  = m_nTicks+nDelay;
     m_KernelTimer[hTimer].m_pParam      = pParam;
