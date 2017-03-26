@@ -1,3 +1,9 @@
+ifeq ($(shell uname),Darwin)
+  HOST_UNAME = Darwin
+else
+  HOST_UNAME =
+endif
+export HOST_UNAME
 
 all:
 	make -C kernel
